@@ -1,0 +1,38 @@
+# Core dependencies for Eion knowledge extraction service
+pydantic>=2.5.0
+requests>=2.31.0
+python-dotenv>=1.0.0
+
+# Graph database and processing
+networkx>=3.2
+numpy>=1.26.0
+neo4j>=5.15.0
+
+# Template processing for Numa
+jinja2>=3.1.0
+
+# JSON and data handling
+orjson>=3.9.0
+
+# HTTP client
+httpx>=0.25.0
+
+# Date/time handling
+python-dateutil>=2.8.0
+
+# Logging and utilities
+tenacity>=8.2.0
+tqdm>=4.66.0
+
+# Database connectivity
+psycopg2-binary>=2.9.0
+
+# Async support (built into Python 3.7+)
+aiofiles>=23.2.0
+
+# Real embedding models (added for production)
+sentence-transformers>=2.2.2
+torch>=2.0.0
+transformers>=4.21.0
+
+# Note: Additional ML libraries like scikit-learn can be added later if needed 

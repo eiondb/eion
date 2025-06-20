@@ -1,0 +1,82 @@
+common:
+  log:
+    level: "info"
+    format: "json"
+  
+  http:
+    host: "0.0.0.0"
+    port: 8080
+    max_request_size: 5242880
+  
+  postgres:
+    user: "eion"
+    password: "eion_pass"
+    host: "localhost"
+    port: 5432
+    database: "eion"
+    schema_name: "public"
+    read_timeout: 30
+    write_timeout: 30
+    max_open_connections: 10
+  
+  redis:
+    host: "localhost"
+    port: 6379
+    password: ""
+    database: 0
+  
+  carbon:
+    locale: "en"
+  
+  # Memory Configuration - Knowledge Graph with Neo4j (MANDATORY)
+  memory:
+    enable_extraction: true
+    vector_store_type: "neo4j"  # MUST be neo4j for Eion
+    token_counter_type: "simple"
+  
+  # Neo4j Configuration - MANDATORY for Eion
+  neo4j:
+    uri: "bolt://localhost:7687"
+    username: "neo4j"
+    password: "password"
+    database: "neo4j"
+  
+  # Numa Configuration - Knowledge Graph Integration
+  numa:
+    # Core Numa is always enabled (local processing)
+    # This switch controls Numa+ enhancement (OpenAI integration)
+    enabled: false
+    
+    # OpenAI API key for Numa+ enhancement (optional - local Numa used by default)
+    openai_api_key: ""  # Set to your OpenAI API key for Numa+ enhanced extraction
+    
+    # Embedding model - all-MiniLM-L6-v2 (384 dimensions) by default
+    embedding_model: "all-MiniLM-L6-v2"
+    
+    # Neo4j configuration (inherited from above)
+    neo4j:
+      uri: "bolt://localhost:7687"
+      username: "neo4j"
+      password: "password"
+      database: "neo4j"
+
+# Production Example with Neo4j:
+# memory:
+#   enable_extraction: true
+#   vector_store_type: "neo4j"
+# neo4j:
+#   uri: "bolt://your-neo4j-server:7687"
+#   username: "neo4j"
+#   password: "your-secure-password"
+#   database: "eion_production"
+
+# Example with Numa+ enabled:
+# numa:
+#   enabled: true
+#   openai_api_key: "sk-your-openai-api-key-here"  # Enables Numa+ enhancement
+#   embedding_model: "all-MiniLM-L6-v2"  # or "openai" for API-based
+#   neo4j:
+#     uri: "bolt://localhost:7687"
+#     username: "neo4j"
+#     password: "your-neo4j-password"
+#     database: "neo4j" 

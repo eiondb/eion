@@ -1,0 +1,113 @@
+# =============================================================================
+# Eion .gitignore - Go-based memory service with knowledge extraction
+# =============================================================================
+
+# ===== Go Build Artifacts =====
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+dist/
+build/
+
+# Go binary outputs (including main package binaries)
+eion-server
+cmd/eion-server/eion-server
+
+# Go-specific files
+*.out
+*.test
+go.work
+vendor/
+
+# ===== Environment & Configuration =====
+# Environment files
+.env
+.env.local
+.env.production
+
+# Configuration overrides (keep examples)
+eion.yaml
+!eion.yaml.example
+
+# ===== Databases & Data =====
+# Docker volumes and data
+docker-data/
+postgres-data/
+redis-data/
+*.db
+
+# Database dumps and backups
+*.sql.gz
+*.dump
+
+# ===== Python Virtual Environment =====
+# Python cache and virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+env/
+venv/
+.venv/
+
+# ===== IDE & Editor Files =====
+# Visual Studio Code
+.vscode/
+
+# IntelliJ IDEA
+.idea/
+
+# Vim/Emacs
+*.swp
+*.swo
+*~
+
+# ===== OS Generated Files =====
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+ehthumbs.db
+Thumbs.db
+
+# ===== Logs & Temporary Files =====
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+
+# ===== Development & Testing =====
+# Coverage reports
+coverage.html
+coverage.out
+
+# Performance profiles
+*.prof
+
+# Documentation builds
+docs/_build/
+site/
+
+# ===== Future Extensions =====
+# Node.js (for potential frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Compiled assets
+*.js.map 
