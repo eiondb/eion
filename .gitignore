@@ -14,7 +14,7 @@ dist/
 build/
 
 # Go binary outputs (including main package binaries)
-eion-server
+/eion-server
 cmd/eion-server/eion-server
 
 # Go-specific files
