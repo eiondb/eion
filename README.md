@@ -11,7 +11,11 @@
 
 </div>
 
-<img src="assets/eion-demo.gif" alt="Eion Demo" width="80%" style="border-radius: 12px; display: block; margin: 0 auto;" />
+<div align="center">
+
+<img src="assets/eion-demo.gif" alt="Eion Demo" width="90%" />
+
+</div>
 
 &nbsp;
 
