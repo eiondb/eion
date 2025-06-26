@@ -6,7 +6,7 @@
   
   *Connecting AI agents through shared memory and collaborative intelligence.*
 
-  ![Version](https://img.shields.io/badge/Version-v0.1.2-green)
+  ![Version](https://img.shields.io/badge/Version-v0.1.3-green)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
 </div>
