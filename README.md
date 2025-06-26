@@ -11,10 +11,7 @@
 
 </div>
 
-<video width="80%" controls style="border-radius: 12px; display: block; margin: 0 auto;">
-    <source src="assets/eion-demo.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-</video>
+<img src="assets/eion-demo.gif" alt="Eion Demo" width="80%" style="border-radius: 12px; display: block; margin: 0 auto;" />
 
 &nbsp;
 
