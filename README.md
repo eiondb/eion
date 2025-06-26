@@ -11,6 +11,13 @@
 
 </div>
 
+<video width="80%" controls style="border-radius: 12px; display: block; margin: 0 auto;">
+    <source src="assets/eion-demo.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+&nbsp;
+
 **Eion** is a shared memory storage that provides unified knowledge graph capabilities for multi-agent systems, adapting to different AI deployment scenarios from single LLM applications to complex multi-agency systems.
 
 ### 1. LLM Application
