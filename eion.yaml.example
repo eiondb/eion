@@ -79,4 +79,16 @@ common:
 #     uri: "bolt://localhost:7687"
 #     username: "neo4j"
 #     password: "your-neo4j-password"
-#     database: "neo4j" 
+#     database: "neo4j"
+
+# MCP Server Configuration
+mcp:
+  enabled: false                    # Enable MCP server
+  port: 8081                        # MCP server port
+  python_path: ".venv/bin/python"   # Path to Python executable
+  log_level: "INFO"                 # MCP server log level (DEBUG, INFO, WARN, ERROR)
+  timeout: 30                       # Request timeout in seconds
+
+# Register Console Configuration
+console:
+  enabled: true                     # Enable Register Console (default: true) 

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/console/static/console.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">E</div>
+            <h1>Eion Register Console</h1>
+            <p class="subtitle">Unified cluster management for multi-agent systems</p>
+        </header>
+
+        <!-- Configuration Display -->
+        <div class="config-display">
+            <h3>Current Configuration</h3>
+            <div id="configDisplay">
+                <div class="loading">Loading configuration...</div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="tabs">
+            <button class="tab active" data-tab="register">Register Agents</button>
+            <button class="tab" data-tab="monitoring">Monitoring</button>
+            <button class="tab" data-tab="resources">Resources</button>
+        </div>
+
+        <!-- Register Agents Tab -->
+        <div id="registerTab" class="tab-content active">
+            <div class="card">
+                <h3>Register New Agent</h3>
+                <form id="agentForm">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Agent Name *</label>
+                        <input type="text" id="name" name="name" class="form-input" 
+                               placeholder="Enter agent name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea id="description" name="description" class="form-input" 
+                                  placeholder="Brief description of the agent" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="permissions" class="form-label">Permissions</label>
+                        <select id="permissions" name="permissions" class="form-input">
+                            <option value="r">Read Only (r)</option>
+                            <option value="rw">Read & Write (rw)</option>
+                            <option value="crud">Full Access (crud)</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Register Agent</button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h3>Registered Agents</h3>
+                <div id="agentsList">
+                    <div class="loading">Loading agents...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monitoring Tab -->
+        <div id="monitoringTab" class="tab-content">
+            <div class="card">
+                <h3>Agent Status</h3>
+                <button class="btn btn-secondary refresh-btn" style="float: right; margin-top: -3rem;">Refresh</button>
+                <div id="agentsList">
+                    <div class="loading">Loading agents...</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Active Sessions</h3>
+                <div id="sessionsList">
+                    <div class="loading">Loading sessions...</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Users</h3>
+                <div id="usersList">
+                    <div class="loading">Loading users...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resources Tab -->
+        <div id="resourcesTab" class="tab-content">
+            <div class="card">
+                <h3>HTTP API Usage</h3>
+                <p>Use these endpoints to integrate with Eion via HTTP API:</p>
+                <div id="httpExamples">
+                    <div class="loading">Loading examples...</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>MCP Integration</h3>
+                <p>Model Context Protocol integration for compatible clients:</p>
+                <div id="mcpExamples">
+                    <div class="loading">Loading MCP examples...</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Quick Start Instructions</h3>
+                <h4>1. Register an Agent</h4>
+                <p>Use the "Register Agents" tab to create a new agent with appropriate permissions.</p>
+                
+                <h4>2. Get API Credentials</h4>
+                <p>Use the Cluster API Key displayed above in your requests.</p>
+                
+                <h4>3. Start Making Requests</h4>
+                <p>Use the HTTP API examples above to interact with Eion's knowledge graph.</p>
+                
+                <h4>4. Monitor Activity</h4>
+                <p>Check the "Monitoring" tab to see agent activity and system status.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/console/static/console.js"></script>
+</body>
+</html> 

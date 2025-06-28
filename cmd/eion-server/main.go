@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"os/exec"
 	"os/signal"
 	"strconv"
 	"strings"
@@ -19,6 +20,7 @@ import (
 	"go.uber.org/zap/zapcore"
 
 	"github.com/eion/eion/internal/config"
+	"github.com/eion/eion/internal/console"
 	"github.com/eion/eion/internal/graph"
 	"github.com/eion/eion/internal/knowledge"
 	"github.com/eion/eion/internal/memory"
@@ -43,6 +45,7 @@ type AppState struct {
 	SessionService     sessions.SessionManager
 	SessionTypeService sessiontypes.SessionTypeManager
 	UserService        users.UserService
+	MCPProcess         *os.Process // MCP server process
 }
 
 func main() {
@@ -70,6 +73,21 @@ func main() {
 	// Create HTTP server
 	router := setupRouter(as)
 
+	// Setup console if enabled
+	if config.Console().Enabled {
+		consoleService := console.NewConsoleService(
+			as.AgentService,
+			as.SessionService,
+			as.UserService,
+			logger,
+			as.Config,
+		)
+		consoleService.SetupRoutes(router)
+		logger.Info("Register Console enabled and configured")
+	} else {
+		logger.Info("Register Console disabled")
+	}
+
 	// Server configuration from config
 	addr := fmt.Sprintf("%s:%d", config.Http().Host, config.Http().Port)
 
@@ -89,6 +107,12 @@ func main() {
 		// Continue anyway - defaults are not critical for basic operation
 	} else {
 		logger.Info("Default data setup completed successfully")
+	}
+
+	// Start MCP server if enabled
+	if err := startMCPServer(as); err != nil {
+		logger.Error("Failed to start MCP server", zap.Error(err))
+		// Continue anyway - MCP is optional
 	}
 
 	// Start server
@@ -204,6 +228,7 @@ func newAppState(logger *zap.Logger) (*AppState, error) {
 		SessionService:     sessionService,
 		SessionTypeService: sessionTypeService,
 		UserService:        userService,
+		MCPProcess:         nil,
 	}, nil
 }
 
@@ -666,10 +691,103 @@ func setupSignalHandler(as *AppState, server *http.Server, logger *zap.Logger) c
 			logger.Error("Error closing memory service", zap.Error(err))
 		}
 
+		// Stop MCP server
+		stopMCPServer(as, logger)
+
 		done <- struct{}{}
 	}()
 
 	return done
+}
+
+// startMCPServer starts the MCP server subprocess if enabled
+func startMCPServer(as *AppState) error {
+	mcpConfig := config.MCP()
+
+	if !mcpConfig.Enabled {
+		as.Logger.Info("MCP server disabled in configuration")
+		return nil
+	}
+
+	as.Logger.Info("Starting MCP server",
+		zap.String("python_path", mcpConfig.PythonPath),
+		zap.Int("port", mcpConfig.Port))
+
+	// Build the MCP server script path
+	scriptPath := "internal/mcp/server.py"
+
+	// Create the command
+	cmd := exec.Command(mcpConfig.PythonPath, scriptPath)
+
+	// Set environment variables for the MCP server
+	httpConfig := config.Http()
+	cmd.Env = append(os.Environ(),
+		fmt.Sprintf("EION_BASE_URL=http://localhost:%d", httpConfig.Port),
+		fmt.Sprintf("EION_TIMEOUT=%d", mcpConfig.Timeout),
+		fmt.Sprintf("MCP_LOG_LEVEL=%s", mcpConfig.LogLevel),
+	)
+
+	// Start the process
+	if err := cmd.Start(); err != nil {
+		return fmt.Errorf("failed to start MCP server: %w", err)
+	}
+
+	// Store the process for cleanup
+	as.MCPProcess = cmd.Process
+
+	as.Logger.Info("MCP server started successfully",
+		zap.Int("pid", cmd.Process.Pid))
+
+	// Monitor the process in a goroutine
+	go func() {
+		if err := cmd.Wait(); err != nil {
+			as.Logger.Error("MCP server process ended", zap.Error(err))
+		} else {
+			as.Logger.Info("MCP server process ended normally")
+		}
+		as.MCPProcess = nil
+	}()
+
+	return nil
+}
+
+// stopMCPServer stops the MCP server subprocess
+func stopMCPServer(as *AppState, logger *zap.Logger) {
+	if as.MCPProcess == nil {
+		return
+	}
+
+	logger.Info("Stopping MCP server", zap.Int("pid", as.MCPProcess.Pid))
+
+	// Send SIGTERM to gracefully shutdown
+	if err := as.MCPProcess.Signal(syscall.SIGTERM); err != nil {
+		logger.Error("Failed to send SIGTERM to MCP server", zap.Error(err))
+		// Force kill if SIGTERM fails
+		if err := as.MCPProcess.Kill(); err != nil {
+			logger.Error("Failed to kill MCP server", zap.Error(err))
+		}
+	}
+
+	// Wait for process to end with timeout
+	done := make(chan error, 1)
+	go func() {
+		_, err := as.MCPProcess.Wait()
+		done <- err
+	}()
+
+	select {
+	case err := <-done:
+		if err != nil {
+			logger.Error("MCP server shutdown error", zap.Error(err))
+		} else {
+			logger.Info("MCP server shutdown successfully")
+		}
+	case <-time.After(5 * time.Second):
+		logger.Warn("MCP server shutdown timeout, force killing")
+		as.MCPProcess.Kill()
+	}
+
+	as.MCPProcess = nil
 }
 
 // Handler functions using new session service

@@ -142,6 +142,36 @@ func LoadFromEnv() {
 		config.Common.Numa.Neo4j.Database = neo4jDatabase
 	}
 
+	// MCP configuration from environment variables
+	if mcpEnabled := os.Getenv("EION_MCP_ENABLED"); mcpEnabled != "" {
+		if enabled, err := strconv.ParseBool(mcpEnabled); err == nil {
+			config.Common.MCP.Enabled = enabled
+		}
+	}
+	if mcpPort := os.Getenv("EION_MCP_PORT"); mcpPort != "" {
+		if port, err := strconv.Atoi(mcpPort); err == nil {
+			config.Common.MCP.Port = port
+		}
+	}
+	if mcpPythonPath := os.Getenv("EION_MCP_PYTHON_PATH"); mcpPythonPath != "" {
+		config.Common.MCP.PythonPath = mcpPythonPath
+	}
+	if mcpLogLevel := os.Getenv("EION_MCP_LOG_LEVEL"); mcpLogLevel != "" {
+		config.Common.MCP.LogLevel = mcpLogLevel
+	}
+	if mcpTimeout := os.Getenv("EION_MCP_TIMEOUT"); mcpTimeout != "" {
+		if timeout, err := strconv.Atoi(mcpTimeout); err == nil {
+			config.Common.MCP.Timeout = timeout
+		}
+	}
+
+	// Console configuration from environment variables
+	if consoleEnabled := os.Getenv("EION_CONSOLE_ENABLED"); consoleEnabled != "" {
+		if enabled, err := strconv.ParseBool(consoleEnabled); err == nil {
+			config.Common.Console.Enabled = enabled
+		}
+	}
+
 	_loaded = &config
 }
 
@@ -194,6 +224,16 @@ var defaultConfig = Config{
 			EmbeddingModel: "",
 			Neo4j:          neo4jConfig{},
 		},
+		MCP: mcpConfig{
+			Enabled:    false,              // DISABLED by default
+			Port:       8081,               // Default MCP server port
+			PythonPath: ".venv/bin/python", // Default Python path
+			LogLevel:   "INFO",             // Default log level
+			Timeout:    30,                 // Default timeout in seconds
+		},
+		Console: consoleConfig{
+			Enabled: true, // ENABLED by default
+		},
 	},
 }
 
@@ -206,6 +246,8 @@ type Common struct {
 	Carbon   carbonConfig   `yaml:"carbon"`
 	Memory   memoryConfig   `yaml:"memory"`
 	Numa     numaConfig     `yaml:"numa"`
+	MCP      mcpConfig      `yaml:"mcp"`
+	Console  consoleConfig  `yaml:"console"`
 }
 
 type logConfig struct {
@@ -290,6 +332,18 @@ type neo4jConfig struct {
 	Database string `yaml:"database"` // Neo4j database name
 }
 
+type mcpConfig struct {
+	Enabled    bool   `yaml:"enabled"`     // Enable MCP server
+	Port       int    `yaml:"port"`        // MCP server port
+	PythonPath string `yaml:"python_path"` // Path to Python executable
+	LogLevel   string `yaml:"log_level"`   // MCP server log level
+	Timeout    int    `yaml:"timeout"`     // Request timeout in seconds
+}
+
+type consoleConfig struct {
+	Enabled bool `yaml:"enabled"` // Enable Register Console
+}
+
 // there should be a getter for each top level field in the config struct.
 // these getters will panic if the config has not been loaded.
 
@@ -348,6 +402,20 @@ func Numa() numaConfig {
 		panic("config not loaded")
 	}
 	return _loaded.Common.Numa
+}
+
+func MCP() mcpConfig {
+	if _loaded == nil {
+		panic("config not loaded - call Load() first")
+	}
+	return _loaded.Common.MCP
+}
+
+func Console() consoleConfig {
+	if _loaded == nil {
+		panic("config not loaded - call Load() first")
+	}
+	return _loaded.Common.Console
 }
 
 func Get() *Config {
@@ -427,5 +495,35 @@ func ApplyEnvOverrides() {
 	}
 	if neo4jDatabase := os.Getenv("EION_NEO4J_DATABASE"); neo4jDatabase != "" {
 		_loaded.Common.Numa.Neo4j.Database = neo4jDatabase
+	}
+
+	// MCP configuration from environment variables
+	if mcpEnabled := os.Getenv("EION_MCP_ENABLED"); mcpEnabled != "" {
+		if enabled, err := strconv.ParseBool(mcpEnabled); err == nil {
+			_loaded.Common.MCP.Enabled = enabled
+		}
+	}
+	if mcpPort := os.Getenv("EION_MCP_PORT"); mcpPort != "" {
+		if port, err := strconv.Atoi(mcpPort); err == nil {
+			_loaded.Common.MCP.Port = port
+		}
+	}
+	if mcpPythonPath := os.Getenv("EION_MCP_PYTHON_PATH"); mcpPythonPath != "" {
+		_loaded.Common.MCP.PythonPath = mcpPythonPath
+	}
+	if mcpLogLevel := os.Getenv("EION_MCP_LOG_LEVEL"); mcpLogLevel != "" {
+		_loaded.Common.MCP.LogLevel = mcpLogLevel
+	}
+	if mcpTimeout := os.Getenv("EION_MCP_TIMEOUT"); mcpTimeout != "" {
+		if timeout, err := strconv.Atoi(mcpTimeout); err == nil {
+			_loaded.Common.MCP.Timeout = timeout
+		}
+	}
+
+	// Console configuration from environment variables
+	if consoleEnabled := os.Getenv("EION_CONSOLE_ENABLED"); consoleEnabled != "" {
+		if enabled, err := strconv.ParseBool(consoleEnabled); err == nil {
+			_loaded.Common.Console.Enabled = enabled
+		}
 	}
 }
