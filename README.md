@@ -9,7 +9,7 @@
   ![Version](https://img.shields.io/badge/Version-v0.1.4-green)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
   
-  [![Discord](https://img.shields.io/badge/Discord-7289DA?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/RSBjQcxG)
+  [![Discord](https://img.shields.io/badge/Discord-7289DA?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/mMNckGYVbq)
 
 </div>
 
